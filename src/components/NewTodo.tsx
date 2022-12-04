@@ -1,26 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import classes from './NewTodo.module.css';
+import { TodosContext } from '../store/todos-context';
 
-const NewTodo: React.FC<{ onAddTodo: (text: string) => void }> = (props) => {
-  //treba nastavit type pre useRef ako HtmlInputElement, inac hlasi chybu...v javascripte je to ok
-  //treba nastavit aj default hodnotu..eventualne moze byt napojeny uz pri inicializacii na nejaky element
+//vsetko teraz cez Todos Context!!!
+const NewTodoOld: React.FC = () => {
+  const todosCtx = useContext(TodosContext);
   const textInputRef = useRef<HTMLInputElement>(null);
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    //typescript nevie, ci uz je textInputRef connectnuty na nejaky element
-    //...preto current?.value...a enteredtext je typu string | undefined
-    //mozeme zmenit na current!.value....ak viem, ze sme connectnuty a hodnota nebude null
-    //(aj ked sa nic nevyplni, bude to '' cize prazdny string, ale nie null!!)...len typ string!
+
     const enteredText = textInputRef.current!.value;
     if (enteredText.trim().length === 0) {
       //throw error
       return;
     }
 
-    //treba zadefinovat ze props moze mat odkaz na funkciu...cez FC<>
-    //return value nepotrebujeme, cize vrati sa void...plus jeden parameter enteredtext typu string
-    props.onAddTodo(enteredText);
+    todosCtx.addTodo(enteredText);
   };
 
   return (
@@ -32,4 +28,4 @@ const NewTodo: React.FC<{ onAddTodo: (text: string) => void }> = (props) => {
   );
 };
 
-export default NewTodo;
+export default NewTodoOld;
